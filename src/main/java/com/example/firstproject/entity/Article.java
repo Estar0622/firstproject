@@ -23,6 +23,13 @@ public class Article {
     @Column
     private String Content;
 
+
+    public void patch(Article article) {
+        if (article.Title != null)
+            this.Title = article.Title;
+        if (article.Content != null)
+            this.Content = article.Content;
+    }
 }
 
 
