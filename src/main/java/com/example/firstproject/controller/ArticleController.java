@@ -1,8 +1,10 @@
 package com.example.firstproject.controller;
 
 import com.example.firstproject.dto.ArticleForm;
+import com.example.firstproject.dto.CommentDto;
 import com.example.firstproject.entity.Article;
 import com.example.firstproject.repository.ArticleRepository;
+import com.example.firstproject.service.CommentService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,6 +22,8 @@ public class ArticleController {
 
     @Autowired
     private ArticleRepository articleRepository;
+    @Autowired
+    private CommentService commentService;
 
     @GetMapping("/articles/new")
     public String newArticleForm() {
@@ -48,8 +52,10 @@ public class ArticleController {
 
         // 1. id로 DB에서 데이터를 가져옴!
         Article articleEntity = articleRepository.findById(id).orElse(null);
+        List<CommentDto> commentDtos = commentService.comments(id);
         // 2. 가져온 데이터를 모델에 등록!
         model.addAttribute("article", articleEntity);
+        model.addAttribute("commenDtos", commentDtos);
         // 3. 보여줄 페이지를 설정!
         return "articles/show";
     }
@@ -58,6 +64,7 @@ public class ArticleController {
     public String index(Model model) {
         // 1. 모든 Article을 가져온다.
         List<Article> articleEntityList = articleRepository.findAll();
+
         // List는 리스트 형태로 받으려고 하는 것. findAll()은 레포지토리에 있는 거 모든 걸 가져오는 것
         // 2. 가져온 Article 묶음을 뷰로 전달한다.
         model.addAttribute("articleList", articleEntityList);
